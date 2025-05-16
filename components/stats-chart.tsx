@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { getStudyDataForChart } from "@/app/services/storage-service"
 
@@ -19,7 +19,7 @@ export function StatsChart({ timeRange }: StatsChartProps) {
   }, [timeRange])
 
   return (
-    <ChartContainer className="h-[300px] w-full">
+    <ChartContainer className="h-[300px] w-full" config={{ cards: { color: "hsl(var(--primary))" } }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
           <defs>
@@ -31,20 +31,18 @@ export function StatsChart({ timeRange }: StatsChartProps) {
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
           <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-          <Tooltip
+          <RechartsTooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
                 return (
-                  <ChartTooltip>
-                    <ChartTooltipContent>
-                      <div className="flex flex-col gap-1">
-                        <p className="text-sm font-medium">{payload[0].payload.day}</p>
-                        <p className="text-sm">
-                          <span className="font-medium">{payload[0].value}</span> cards reviewed
-                        </p>
-                      </div>
-                    </ChartTooltipContent>
-                  </ChartTooltip>
+                  <div className="rounded-lg border border-border bg-card px-3 py-2 text-sm shadow-md">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-sm font-medium">{payload[0].payload.day}</p>
+                      <p className="text-sm">
+                        <span className="font-medium">{payload[0].value}</span> cards reviewed
+                      </p>
+                    </div>
+                  </div>
                 )
               }
               return null
